@@ -1,9 +1,9 @@
-/* Hello Triangle - código adaptado de https://learnopengl.com/#!Getting-started/Hello-Triangle 
+/* Hello Triangle - código adaptado de https://learnopengl.com/#!Getting-started/Hello-Triangle
  *
  * Código inicial para trabalhar com OpenGL 4
  * Adaptado pelos professores Vinicius Cassol e Rossana Queiroz
  * para uso didático em sala de aula
- * 
+ *
  */
 
 #include <iostream>
@@ -67,7 +67,7 @@ int main()
 //#endif
 
 	// Criação da janela GLFW
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Meu primeiro triangulo! - Robert Alexandre 125111346364", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Exercicio 3 - Robert Alexandre 125111346364", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Fazendo o registro da função de callback para a janela GLFW
@@ -77,7 +77,6 @@ int main()
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
-
 	}
 
 	// Obtendo as informações de versão
@@ -97,16 +96,16 @@ int main()
 
 	// Gerando um buffer simples, com a geometria de um triângulo
 	GLuint VAO = setupGeometry();
-	
+
 
 	// Enviando a cor desejada (vec4) para o fragment shader
 	// Utilizamos a variáveis do tipo uniform em GLSL para armazenar esse tipo de info
 	// que não está nos buffers
 	GLint colorLoc = glGetUniformLocation(shaderID, "inputColor");
 	assert(colorLoc > -1);
-	
+
 	glUseProgram(shaderID);
-	
+
 
 	// Loop da aplicação - "game loop"
 	while (!glfwWindowShouldClose(window))
@@ -115,24 +114,63 @@ int main()
 		glfwPollEvents();
 
 		// Limpa o buffer de cor
-		glClearColor(0.8f, 0.8f, 0.8f, 1.0f); //cor de fundo
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //cor de fundo
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glLineWidth(10);
-		glPointSize(20);
 
-		// Chamada de desenho - drawcall
-		// Poligono Preenchido - GL_TRIANGLES
-		glUniform4f(colorLoc, 0.7f, 0.3f, 0.2f, 1.0f); //enviando cor para variável uniform inputColor - troquei aqui para mudar a cor de fundo do triângulo
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//Ex3 
+		//Desenhando os pontos
+		glPointSize(1);
+		glUniform4f(colorLoc, 0.0f, 0.0f, 1.0f, 1.0f);
+		glDrawArrays(GL_POINTS, 0, 4);
 
-		// Chamada de desenho - drawcall
-		// CONTORNO - GL_LINE_LOOP
-		// PONTOS - GL_POINTS
-		glUniform4f(colorLoc, 0.5f, 0.5f, 0.5f, 1.0f); //enviando cor para variável uniform inputColor
-		//glDrawArrays(GL_POINTS, 0, 3); Comentei essa linha para remover os pontos do triangulo
-		glBindVertexArray(0);
+		//Desenhando as linhas
+		glLineWidth(8);
+		glUniform4f(colorLoc, 0.0f, 1.0f, 0.0f, 1.0f);
+		glDrawArrays(GL_LINES, 4, 2);
+
+		glUniform4f(colorLoc, 1.0f, 0.0f, 0.0f, 1.0f);
+		glDrawArrays(GL_LINES, 6, 2);
+
+		glLineWidth(6);
+		glUniform4f(colorLoc, 0.0f, 0.0f, 1.0f, 1.0f);
+		glDrawArrays(GL_LINES, 8, 2);
+		//------------
+
+		//Desenhando o peixe
+		glLineWidth(2);
+		glUniform4f(colorLoc, 1.0f, 0.0f, 0.0f, 1.0f);
+		glDrawArrays(GL_LINE_LOOP, 10, 7);
+		//------------------
+
+		//Desenha o poligono amarelo
+		glLineWidth(2);
+		glUniform4f(colorLoc, 1.0f, 1.0f, 0.0f, 1.0f);
+		glDrawArrays(GL_TRIANGLES, 17, 3);
+		glDrawArrays(GL_TRIANGLES, 20, 3);
+		//--------------------------
+
+		//Desenhando o polígono azul
+		glLineWidth(2);
+		glUniform4f(colorLoc, 0.0f, 0.0f, 1.0f, 1.0f);
+		glDrawArrays(GL_TRIANGLES, 23, 3);
+		glDrawArrays(GL_TRIANGLES, 26, 3);
+		glDrawArrays(GL_TRIANGLES, 29, 3);
+		glDrawArrays(GL_TRIANGLES, 32, 3);
+		//--------------------------
+
+		//Desenhando os quadrados
+		glUniform4f(colorLoc, 1.0f, 0.0f, 1.0f, 1.0f);
+		glDrawArrays(GL_TRIANGLES, 35, 3);
+		glDrawArrays(GL_TRIANGLES, 38, 3);
+		glUniform4f(colorLoc, 1.0f, 1.0f, 0.0f, 1.0f);
+		glDrawArrays(GL_TRIANGLES, 41, 3);
+		glDrawArrays(GL_TRIANGLES, 44, 3);
+		glUniform4f(colorLoc, 0.0f, 1.0f, 0.0f, 1.0f);
+		glDrawArrays(GL_TRIANGLES, 47, 3);
+		glDrawArrays(GL_TRIANGLES, 50, 3);
+		//-----------------------
 
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
@@ -213,10 +251,71 @@ int setupGeometry()
 	// Cada atributo do vértice (coordenada, cores, coordenadas de textura, normal, etc)
 	// Pode ser arazenado em um VBO único ou em VBOs separados
 	GLfloat vertices[] = {
-		-0.5, -0.5, 0.0,
-		 0.5, -0.5, 0.0,
-		 0.0, 0.5, 0.0,
-		 //outro triangulo vai aqui
+		-0.9, 0.9, 0.0,
+		-0.9, 0.8, 0.0,
+		-0.8, 0.9, 0.0,
+		-0.8, 0.8, 0.0,
+
+		0.0, 0.0, 0.0,
+		0.0, 1.0, 0.0,
+
+		0.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+
+		0.0, 0.0, 0.0,
+		-1.0, -1.0, 0.0,
+
+		-0.5, 0.3, 0.0,
+		-0.4, 0.2, 0.0,
+		-0.3, 0.3, 0.0,
+		-0.2, 0.2, 0.0,
+		-0.2, 0.5, 0.0,
+		-0.3, 0.4, 0.0,
+		-0.4, 0.5, 0.0,
+
+		-0.9, -0.4, 0.0,
+		-0.3, -0.5, 0.0,
+		-0.2, -0.1, 0.0,
+		-0.9, -0.4, 0.0,
+		-0.5, -0.3, 0.0,
+		-0.7, -0.1, 0.0,
+
+		0.2, -0.9, 0.0,
+		0.7, -0.8, 0.0,
+		0.2, -0.5, 0.0,
+
+		0.2, -0.5, 0.0,
+		0.7, -0.8, 0.0,
+		0.6, -0.6, 0.0,
+
+		0.6, -0.6, 0.0,
+		0.7, -0.8, 0.0,
+		0.8, -0.7, 0.0,
+
+		0.2, -0.5, 0.0,
+		0.6, -0.6, 0.0,
+		0.5, -0.4, 0.0,
+
+		0.8, 0.1, 0.0,
+		0.9, 0.1, 0.0,
+		0.8, 0.2, 0.0,
+		0.8, 0.2, 0.0,
+		0.9, 0.1, 0.0,
+		0.9, 0.2, 0.0,
+
+		0.7, 0.2, 0.0,
+		0.8, 0.2, 0.0,
+		0.7, 0.3, 0.0,
+		0.7, 0.3, 0.0,
+		0.8, 0.2, 0.0,
+		0.8, 0.3, 0.0,
+
+		0.6, 0.3, 0.0,
+		0.7, 0.3, 0.0,
+		0.6, 0.4, 0.0,
+		0.6, 0.4, 0.0,
+		0.7, 0.3, 0.0,
+		0.7, 0.4, 0.0
 	};
 
 	GLuint VBO, VAO;
@@ -245,10 +344,10 @@ int setupGeometry()
 
 	// Observe que isso é permitido, a chamada para glVertexAttribPointer registrou o VBO como o objeto de buffer de vértice 
 	// atualmente vinculado - para que depois possamos desvincular com segurança
-	glBindBuffer(GL_ARRAY_BUFFER, 0); 
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Desvincula o VAO (é uma boa prática desvincular qualquer buffer ou array para evitar bugs medonhos)
-	glBindVertexArray(0); 
+	glBindVertexArray(0);
 
 	return VAO;
 }
